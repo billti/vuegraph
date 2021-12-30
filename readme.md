@@ -13,7 +13,7 @@ Install the client side AzureAD and request helper with:
 
 Install the WebPack build tooling with:
 
-  `npm install --save-dev webpack vue-loader vue-template-compiler ts-loader`
+  `npm install --save-dev webpack webpack-cli vue-loader vue-template-compiler ts-loader`
 
 Add the below to package.json to build with WebPack via `npm run build`
 

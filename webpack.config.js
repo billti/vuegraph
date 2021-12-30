@@ -6,20 +6,33 @@ module.exports = {
     devtool: "inline-source-map",
     entry: "./src/main.ts",
     output: {
-        filename: "main.js",
+        filename: "bundle.js",
         path: path.resolve(__dirname, "wwwroot")
     },
     resolve: {
-        extensions: ["*.ts", "*.js", "*.vue"]
+        extensions: [".ts", ".js", ".vue"]
     },
     module: {
         rules: [
             { test: /\.vue$/, loader: "vue-loader" },
-            { test: /\.tsx?$/, loader: "ts-loader", options: {
+            { test: /\.tsx?$/, loader: "ts-loader", exclude: /node_modules/, options: {
                 appendTsSuffixTo: [/\.vue$/],
                 transpileOnly: false
             }},
+            {
+                test: /\.css$/,
+                use: [
+                    'vue-style-loader',
+                    'css-loader'
+                ]
+            }
         ]
     },
-    plugins: [new VueLoaderPlugin()]
+    plugins: [new VueLoaderPlugin()],
+    externals: {
+        "vue": "Vue"
+    },
+    stats: {
+        errorDetails: true
+    }
 };

@@ -1,6 +1,6 @@
 ﻿<template>
     <div>
-        <p>Hello, world</p>
+        <p class="sampleClass">Hello, world</p>
     </div>
 </template>
 
@@ -11,3 +11,9 @@
     export default class Home extends Vue {
     }
 </script>
+
+<style>
+    .sampleClass {
+        color: rebeccapurple;
+    }
+</style>
