@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "target": "es2020",
+    "allowUmdGlobalAccess": true,
+    "module": "ES2015",
+    "moduleResolution": "node"
+  },
+  "include": ["src/**/*"],
+  "exclude": [
+    "node_modules",
+    "wwwroot"
+  ]
+}
