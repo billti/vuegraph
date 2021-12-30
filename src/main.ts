@@ -1,9 +1,6 @@
 ﻿import Layout from "./Layout.vue";
 import Home from "./Home.vue";
 
-// TODO: Should be loaded automatically
-// Vue.use(Vuetify);
-
 const routes = [
     { path: "/", component: Home }
 ];
