@@ -1,15 +1,14 @@
 {
   "compilerOptions": {
     "strict": true,
-    "noImplicitAny": true,
     "noImplicitReturns": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "sourceMap": true,
     "target": "es2020",
-    "allowUmdGlobalAccess": true,
-    "module": "ES2015",
-    "moduleResolution": "node"
+    "module": "es2015",
+    "moduleResolution": "node",
+    "allowUmdGlobalAccess": true
   },
   "include": ["src/**/*"],
   "exclude": [

@@ -44,4 +44,6 @@ See also <https://vue-loader.vuejs.org/guide/#manual-setup> for vue-loader detai
 Vue and TypeScript setup explained with examples at <https://johnpapa.net/vue-typescript/>
 WebPack TypeScript docs at <https://webpack.js.org/guides/typescript/>
 Using Class Components <https://class-component.vuejs.org/>
+Property decorators <https://github.com/kaorun343/vue-property-decorator>
 Vue TypeScript support <https://vuejs.org/v2/guide/typescript.html>
+MSAL usage docs at <https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-browser>

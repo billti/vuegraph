@@ -9,3 +9,5 @@ declare var Vuetify: typeof import("vuetify").default;
 // Pull in the VueRouter definition explicitly from the package
 // This also augments the Vue instances with $route and $router
 declare var VueRouter: typeof import("vue-router").default;
+
+declare var msal: typeof import("@azure/msal-browser");
