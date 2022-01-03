@@ -3,7 +3,8 @@
   "name": "vuegraph",
   "private": true,
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "build:watch": "webpack --watch"
   },
   "devDependencies": {
     "ts-loader": "^9.2.6",
