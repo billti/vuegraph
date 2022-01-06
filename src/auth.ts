@@ -2,6 +2,7 @@ import { AccountInfo, Configuration, InteractionRequiredAuthError } from "@azure
 
 const msalConfig: Configuration = {
     auth: {
+        // "Marketplace" app registration in the "billti.dev" tenant AzureAD tenant
         clientId: "f9c0e95b-5075-49b8-a673-6eb1bc113cf4",
         authority: "https://login.microsoftonline.com/a8257b21-ac35-4244-9f9e-17c2ea736263",
         redirectUri: window.location.origin
@@ -55,7 +56,8 @@ export function acquireToken(scopes: string[]) {
     let request = { scopes, account: currentUser!, redirectUri: popupRedirect };
     return msalInstance.acquireTokenSilent(request)
         .catch(err => {
-            if (err instanceof InteractionRequiredAuthError) {
+            // TODO: Why isn't the "instanceof" check working here? The instance is of type "AuthError"
+            if (err.name === "InteractionRequiredAuthError") {
                 return msalInstance.acquireTokenPopup(request);
             } else {
                 throw err;

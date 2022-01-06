@@ -6,11 +6,17 @@ builder.Services.AddRazorPages();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpLogging(options => {
+    // These are sensitive headers. Only log for development purposes.
+    options.RequestHeaders.Add("Authorization");
+    options.ResponseHeaders.Add("WWW-Authenticate");
+});
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseHttpLogging();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
