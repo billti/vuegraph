@@ -1,5 +1,10 @@
-﻿
-Install the Vuetify basics with:
+﻿# VueGraph
+
+A simple Vue (and Vuetify) app that authenticates to AzureAD to make calls to ASP.NET REST and Graph APIs.
+
+## How this was authored
+
+Install the Vue libraries with:
 
   `npm install vue vue-router vuetify`
 

@@ -1,29 +1,20 @@
 ﻿<template>
     <v-app id="inspire">
-        <v-navigation-drawer v-model="drawer" app clipped>
-            <v-list dense>
-                <v-list-item link :to="'/'">
+        <v-navigation-drawer app clipped>
+            <v-list>
+                <v-list-item link v-for="i in getRoutes()" :key="i.name" :to="i.path">
                     <v-list-item-action>
-                        <v-icon>mdi-view-dashboard</v-icon>
+                        <v-icon>{{i.meta.icon}}</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>Dashboard</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-                <v-list-item link :to="'/babylon'">
-                    <v-list-item-action>
-                        <v-icon>mdi-cog</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                        <v-list-item-title>Settings</v-list-item-title>
+                        <v-list-item-title>{{i.name}}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
             </v-list>
         </v-navigation-drawer>
 
-        <v-app-bar app clipped-left class="sampleClass">
-            <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-            <v-toolbar-title>Application</v-toolbar-title>
+        <v-app-bar app clipped-left>
+            <v-toolbar-title>Vuetify Application</v-toolbar-title>
         </v-app-bar>
 
         <v-main>
@@ -31,10 +22,6 @@
                 <router-view></router-view>
             </v-container>
         </v-main>
-
-        <v-footer app>
-            <span>&copy; {{ new Date().getFullYear() }}</span>
-        </v-footer>
     </v-app>
 </template>
 
@@ -43,15 +30,12 @@
 
     @Component({})
     export default class Layout extends Vue {
-        drawer: boolean = false;
+        getRoutes() {
+            return this.$router.getRoutes().filter(route => route.path != "*");
+        }
+
         created() {
             this.$vuetify.theme.dark = true;
         }
     }
 </script>
-
-<style>
-    .sampleClass {
-        color: rebeccapurple;
-    }
-</style>

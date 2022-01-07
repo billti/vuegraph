@@ -1,8 +1,8 @@
-import { AccountInfo, Configuration, InteractionRequiredAuthError } from "@azure/msal-browser";
+import { AccountInfo, Configuration } from "@azure/msal-browser";
 
 const msalConfig: Configuration = {
     auth: {
-        // "Marketplace" app registration in the "billti.dev" tenant AzureAD tenant
+        // "Marketplace" app registration in the "billti.dev" AzureAD tenant
         clientId: "f9c0e95b-5075-49b8-a673-6eb1bc113cf4",
         authority: "https://login.microsoftonline.com/a8257b21-ac35-4244-9f9e-17c2ea736263",
         redirectUri: window.location.origin
@@ -29,12 +29,12 @@ export function requireAccount(): Promise<AccountInfo> {
             const currentAccounts = msalInstance.getAllAccounts();
             if (currentAccounts.length < 1) {
                 // Nobody signed in. On browser page load there has been no interaction (e.g. user click event), so have
-                // to do the redirect flow, as popups are blocked.
+                // to do the redirect flow, as popups will be blocked.
                 // Note: This navigates the window to the AzureAD login page, so no further code executes after this call.
                 msalInstance.loginRedirect();
             } else {
                 // One or more accounts already signed-in. Could prompt the user which to use, but just default to the first
-                // It seems highly unlikely in a single-tenant app you'd be signed in with multiple accounts at the same time.
+                // It seems rare in a single-tenant app you'd be signed in with multiple accounts at the same time.
                 currentUser = currentAccounts[0];
             }
         } else {
@@ -51,12 +51,14 @@ export function requireAccount(): Promise<AccountInfo> {
     });
 }
 
+// TODO: This currently calls *Popup, so would need to only be called as part of interaction.
+// For ease of use, this should return that the silent acquire failed so the user can call a popup.
 export function acquireToken(scopes: string[]) {
     // Try to get the token silently. If that fails, the credentials (and refresh token) may have expired.
     let request = { scopes, account: currentUser!, redirectUri: popupRedirect };
     return msalInstance.acquireTokenSilent(request)
         .catch(err => {
-            // TODO: Why isn't the "instanceof" check working here? The instance is of type "AuthError"
+            // TODO: Why isn't the "instanceof" check as per the samples working here? The instance is of type "AuthError"
             if (err.name === "InteractionRequiredAuthError") {
                 return msalInstance.acquireTokenPopup(request);
             } else {

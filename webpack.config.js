@@ -3,7 +3,8 @@ const VueLoaderPlugin = require("vue-loader/lib/plugin");
 
 module.exports = {
     mode: "development",
-    devtool: "inline-source-map",
+    devtool: "source-map",
+    stats: true,
     entry: "./src/main.ts",
     output: {
         filename: "bundle.js",
