@@ -52,7 +52,11 @@
     }
 </script>
 
-<style scoped>
+<style>
+.myExample {
+    font-family: Verdana;
+}
+
 .sampleClass {
   color: green;
 }

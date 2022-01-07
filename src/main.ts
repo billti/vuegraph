@@ -3,7 +3,6 @@ import Home from "./Home.vue";
 import { requireAccount } from "./auth";
 
 import type { RouteConfig } from "vue-router";
-const css = require("./style.css");
 
 requireAccount().then(account => {
     console.log("Welcome, %s!", account.name);
