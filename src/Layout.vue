@@ -14,7 +14,7 @@
         </v-navigation-drawer>
 
         <v-app-bar app clipped-left>
-            <v-toolbar-title @click="showSheet = true">Vuetify Application</v-toolbar-title>
+            <v-toolbar-title class="sampleClass" @click="showSheet = true">Vuetify Application</v-toolbar-title>
         </v-app-bar>
 
         <v-main>
@@ -51,3 +51,9 @@
         }
     }
 </script>
+
+<style scoped>
+.sampleClass {
+  color: green;
+}
+</style>
