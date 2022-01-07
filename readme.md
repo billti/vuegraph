@@ -18,7 +18,7 @@ Install the client side AzureAD and request helper with:
 
 Install the WebPack build tooling with:
 
-  `npm install --save-dev webpack webpack-cli vue-loader vue-template-compiler ts-loader`
+  `npm install --save-dev webpack webpack-cli vue-loader vue-template-compiler ts-loader mini-css-extract-plugin`
 
 Add the below to package.json to build with WebPack via `npm run build`
 
@@ -52,3 +52,9 @@ Using Class Components <https://class-component.vuejs.org/>
 Property decorators <https://github.com/kaorun343/vue-property-decorator>
 Vue TypeScript support <https://vuejs.org/v2/guide/typescript.html>
 MSAL usage docs at <https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-browser>
+
+## TODO
+
+- Add the Account page
+- Add the ability to search Graph for users
+- Add an authenticated REST API on the controllers

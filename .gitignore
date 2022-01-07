@@ -3,5 +3,4 @@ bin/
 obj/
 .vs/
 *.csproj.user
-bundle.js
-bundle.js.map
+wwwroot/dist/**
