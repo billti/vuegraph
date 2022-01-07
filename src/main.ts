@@ -15,7 +15,7 @@ requireAccount().then(account => {
     ];
     
     const app = new Layout({
-        vuetify: new Vuetify(),
+        vuetify: new Vuetify({theme: {dark: true}}),
         router: new VueRouter({ routes })
     });
     app.$mount("#app");    
