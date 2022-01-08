@@ -33,21 +33,31 @@
 </template>
 
 <script lang="ts">
-    import { Component, Prop, Watch } from "vue-property-decorator";
-    import {loginPopup} from "./auth";
+    import { Component } from "vue-property-decorator";
+    import { setInvokeSignInPopup } from "./auth";
 
     @Component({})
     export default class Layout extends Vue {
         showSheet = false;
+        signInClickHandler: Function | null = null;
 
         getRoutes() {
             return this.$router.getRoutes().filter(route => route.path != "*");
         }
 
+        created() {
+            // Give the auth handler the function to run when it needs to show UX
+            // to respond to user interaction (e.g. a click event to show a popup)
+            setInvokeSignInPopup((callback: Function) => {
+                this.signInClickHandler = callback;
+                this.showSheet = true;
+            });
+        }
+
         onSignInClicked() {
-            loginPopup(["openid", "User.Read"]).then(res => {
-                console.log("Authenticated as user: %s", res.account?.username);
-            }).finally(() => this.showSheet = false);
+            if (this.signInClickHandler) this.signInClickHandler();
+            this.signInClickHandler = null;
+            this.showSheet = false;
         }
     }
 </script>

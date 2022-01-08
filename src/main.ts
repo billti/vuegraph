@@ -20,5 +20,3 @@ requireAccount().then(account => {
     });
     app.$mount("#app");    
 });
-
-export default "v0.1";

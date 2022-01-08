@@ -1,5 +1,25 @@
 ﻿@page
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment hostingEnv
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    bool isDev = hostingEnv.IsDevelopment();
+
+    string cdnRoot = "https://cdn.jsdelivr.net/npm";
+    
+    string vuetifyCss  = isDev ? "/node_modules/vuetify/dist/vuetify.css"
+                            : $"{cdnRoot}/vuetify@2.6.2/dist/vuetify.min.css";
+    string vuetifyJs   = isDev ? "/node_modules/vuetify/dist/vuetify.js"
+                            : $"{cdnRoot}/vuetify@2.6.2/dist/vuetify.min.js";
+    string msalJs      = isDev ? "/node_modules/@azure/msal-browser/lib/msal-browser.js"
+                            : $"{cdnRoot}/@azure/msal-browser@2.21.0/lib/msal-browser.min.js";
+    string axiosJs     = isDev ? "/node_modules/axios/dist/axios.js"
+                            : $"{cdnRoot}/axios@0.24.0/dist/axios.min.js";
+    string vueJs       = isDev ? "/node_modules/vue/dist/vue.js"
+                            : $"{cdnRoot}/vue@2.6.14/dist/vue.runtime.min.js";
+    string vueRouterJs = isDev ? "/node_modules/vue-router/dist/vue-router.js"
+                            : $"{cdnRoot}/vue-router@3.5.3/dist/vue-router.min.js";
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,18 +28,18 @@
     <link rel="icon" href="data:image/gif;base64,R0lGODlhEAAQAAAAACH5BAEAAAAALAAAAAABAAEAAAIBKAA7">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@mdi/font@@6.x/css/materialdesignicons.min.css">
-    <link rel="stylesheet" href="/node_modules/vuetify/dist/vuetify.css">
+    <link rel="stylesheet" href="@vuetifyCss">
     <link rel="stylesheet" href="~/dist/main.css" asp-append-version="true">
     <title>Vuetify starter</title>
 </head>
 <body>
     <div id="app">...loading</div>
 
-    <script src="/node_modules/@@azure/msal-browser/lib/msal-browser.js"></script>
-    <script src="/node_modules/axios/dist/axios.js"></script>
-    <script src="/node_modules/vue/dist/vue.js"></script>
-    <script src="/node_modules/vue-router/dist/vue-router.js"></script>
-    <script src="/node_modules/vuetify/dist/vuetify.js"></script>
+    <script src="@msalJs"></script>
+    <script src="@axiosJs"></script>
+    <script src="@vueJs"></script>
+    <script src="@vueRouterJs"></script>
+    <script src="@vuetifyJs"></script>
     <script src="~/dist/main.js" asp-append-version="true"></script>
 </body>
 </html>

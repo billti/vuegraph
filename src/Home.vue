@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import { Component } from "vue-property-decorator";
-import { acquireToken } from "./auth";
+import { acquireTokenSilentOrPopup } from "./auth";
 
 const graphScopes = [
   "User.ReadBasic.All",
@@ -16,7 +16,7 @@ const graphScopes = [
 @Component({})
 export default class Home extends Vue {
   getToken() {
-    acquireToken(graphScopes).then((res) => {
+    acquireTokenSilentOrPopup(graphScopes).then((res) => {
       console.log( "Got scopes [%s] for user: %s", res.scopes.join(","), res.account?.name);
     });
   }
