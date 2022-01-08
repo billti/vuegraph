@@ -46,7 +46,7 @@ import { Component } from "vue-property-decorator";
 import { logOut, setInvokeSignInPopup } from "./auth";
 
 @Component({})
-export default class Layout extends Vue {
+export default class App extends Vue {
   showSheet = false;
   signInClickHandler: Function | null = null;
   userName = "";
