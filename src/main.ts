@@ -5,7 +5,7 @@ import { requireAccount } from "./auth";
 import type { RouteConfig } from "vue-router";
 
 requireAccount().then(account => {
-    console.log("Welcome, %s!", account.name);
+    if (!account) throw "No logged in account"; // Shouldn't happen.
 
     const routes: RouteConfig[] = [
         { path: "*", redirect: "/home"},
@@ -18,5 +18,7 @@ requireAccount().then(account => {
         vuetify: new Vuetify({theme: {dark: true}}),
         router: new VueRouter({ routes })
     });
-    app.$mount("#app");    
+    app.$mount("#app");
+
+    (app as any).setUserName(account.name || "");
 });

@@ -15,10 +15,10 @@
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,
             // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
-            "serverReadyAction": {
-                "action": "openExternally",
-                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
-            },
+            // "serverReadyAction": {
+            //    "action": "openExternally",
+            //    "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            // },
             // "suppressJITOptimizations": true, // Uncomment to better debug DLLs from NuGet packages, etc.
             "env": {
                 // "COMPlus_ReadyToRun": "0",    // Uncomment to disable loading n'gened (pre-optimized) binaries
@@ -34,9 +34,6 @@
             },
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"
-            },
-            "launchBrowser": {
-                "enabled": false
             }
         },
         {

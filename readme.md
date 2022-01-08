@@ -51,6 +51,8 @@ async function acquireToken(scopes: string[]) : Promise<Token> {
 }
 ```
 
+Note: Be sure to register the popup redirect URL `/popupRedirect.html` as a reply URL for the app.
+
 ## How this was authored
 
 Install the Vue libraries with:
@@ -104,8 +106,6 @@ MSAL usage docs at <https://github.com/AzureAD/microsoft-authentication-library-
 
 ## TODO
 
-- Wire up any auth requests to go through the popup handler.
 - Add the Account page
 - Add the ability to search Graph for users
 - Add an authenticated REST API on the controllers
-- Using the CDN and minified files, less than 800KB on the network for the whole site, with less than 90KB of that from the host! (The rest from the CDN)
