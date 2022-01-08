@@ -80,6 +80,10 @@ Install the webpack build tooling with:
 
   `npm install --save-dev webpack webpack-cli vue-loader vue-template-compiler ts-loader mini-css-extract-plugin`
 
+Add a `webpack.config.js` file as per this project for Vue, TypeScript, and CSS build support.
+
+Likewise see the `tsconfig.json` at the root of this project for the minimal settings needed.
+
 Add the below to package.json to build with webpack via `npm run build`
 
 ```txt
@@ -89,26 +93,24 @@ Add the below to package.json to build with webpack via `npm run build`
   },
 ```
 
-Add a `webpack.config.js` file as per this project for Vue, TypeScript, and CSS build support.
-
-Likewise see the `tsconfig.json` at the root of this project for the minimal settings needed.
-
 Add `<TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>` to the .csproj file to only compile
 the TypeScript code via webpack, not Visual Studio.
 
 ## Links
 
-The docs at <https://github.com/microsoft/typescript-vue-starter> give a lot good info.
-See also <https://vue-loader.vuejs.org/guide/#manual-setup> for vue-loader details.
-Vue and TypeScript setup explained with examples at <https://johnpapa.net/vue-typescript/>
-WebPack TypeScript docs at <https://webpack.js.org/guides/typescript/>
-Using Class Components <https://class-component.vuejs.org/>
-Property decorators <https://github.com/kaorun343/vue-property-decorator>
-Vue TypeScript support <https://vuejs.org/v2/guide/typescript.html>
-MSAL usage docs at <https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-browser>
+The below links may be useful for more information:
+
+- The docs at <https://github.com/microsoft/typescript-vue-starter> give a lot good info.
+- See also <https://vue-loader.vuejs.org/guide/#manual-setup> for vue-loader details.
+- Vue and TypeScript setup explained with examples at <https://johnpapa.net/vue-typescript/>
+- WebPack TypeScript docs at <https://webpack.js.org/guides/typescript/>
+- Using Class Components <https://class-component.vuejs.org/>
+- Property decorators <https://github.com/kaorun343/vue-property-decorator>
+- Vue TypeScript support <https://vuejs.org/v2/guide/typescript.html>
+- MSAL usage docs at <https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-browser>
 
 ## TODO
 
+- Add an authenticated REST API on the controllers
 - Add the Account page
 - Add the ability to search Graph for users
-- Add an authenticated REST API on the controllers
