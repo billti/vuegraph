@@ -1,5 +1,7 @@
 import { AccountInfo, AuthenticationResult, Configuration, PopupRequest } from "@azure/msal-browser";
 
+const logDetails = true;
+
 // Below is for the "Marketplace" app registration in the "billti.dev" AzureAD tenant
 const msalConfig: Configuration = {
     auth: {
@@ -8,6 +10,18 @@ const msalConfig: Configuration = {
         redirectUri: window.location.origin
     }
 };
+
+if (logDetails) {
+    msalConfig.system = {
+        loggerOptions: {
+            piiLoggingEnabled: true, 
+            loggerCallback: (level, msg) => {
+                console.log("MSAL: Level: %d: %s", level, msg);
+            }
+        }
+    }
+}
+
 const msalInstance = new msal.PublicClientApplication(msalConfig);
 let currentUser: AccountInfo | null = null;
 
@@ -36,9 +50,10 @@ export function requireAccount(): Promise<AccountInfo> {
         } else {
             // It was a successful login redirect. "resp" with have properties such as idToken, accessToken, account.homeAccountId, username, etc.
             // account.homeAccountId is in "<oid>.<tid>" format, e.g. "f1136a33-0ece-40b1-a09f-57a2669aee65.72f988bf-86f1-41af-91ab-2d7cd011db47"
+            if (!resp.account) throw "AuthenticationResult on redirect had a null account property";
             currentUser = resp.account;
         }
-        console.log(`Logged in as ${currentUser!.username}`);
+        if (logDetails) console.log(`Logged in as ${currentUser!.username}`);
         return currentUser!;
     }).catch(err => {
         // Just redirect back to the login page again on error. Note, the following 'throw' will never execute.
@@ -56,11 +71,11 @@ export function setInvokeSignInPopup(fn: (callback: Function) => void) {
     invokeSignInPopup = fn;
 }
 
-function authPopupDialog(request: PopupRequest) : Promise<AuthenticationResult> {
+function authPopupDialog(request: PopupRequest): Promise<AuthenticationResult> {
     if (!invokeSignInPopup) throw "No sign-in popup invoker has been provided";
 
     var resultPromise = new Promise<AuthenticationResult>((resolve, reject) => {
-        invokeSignInPopup!( ()=> {
+        invokeSignInPopup!(() => {
             // Inside an onclick handler here, so can call methods that invoke a popup.
             // Resolve the promise this function returns with the result of that call.
             msalInstance.acquireTokenPopup(request).then(resolve, reject);
@@ -79,22 +94,34 @@ export async function acquireTokenSilentOrPopup(scopes: string[]): Promise<Authe
     }
     catch (err: any) {
         // If it failed, and not due to user interaction required, then surface that.
-        if (err.name !== "InteractionRequiredAuthError") throw err;
+        if (!(err instanceof msal.InteractionRequiredAuthError)) {
+            if (logDetails) console.log("Unexpected error trying to acquire token silently: %s", err);
+            throw err;
+        }
     }
 
     // If user interaction is required, try to show the popup here. This may fail if
     // popups are blocked currently (due to code running NOT as a result of user interaction).
-    try
-    {
+    try {
         let msalResult = await msalInstance.acquireTokenPopup(request);
         if (msalResult && msalResult.accessToken) return msalResult;
     }
-    catch(err: any) {
-        // TODO: Any specific error here when popups are blocked? Rethrow if not that one.
+    catch (err: any) {
+        // BrowserAuthErrorDetected occurs if the popup window was blocked.
+        if (!(err instanceof msal.BrowserAuthError)) {
+            if (logDetails) console.log("Unexpected error trying to show MSAL popup windows: %s", err);
+            throw err;
+        }
     }
 
     // Last try, where we surface some UX for the user to interact with and invoke the popup
     // off of that interaction. Just let the exception bubble up if this fails.
-    let popupResult = await authPopupDialog(request);
-    return popupResult;
+    try {
+        let popupResult = await authPopupDialog(request);
+        return popupResult;
+    }
+    catch (err) {
+        if (logDetails) console.log("All token acquisition avenues exhausted. Final error: %s", err);
+        throw err;
+    }
 }
