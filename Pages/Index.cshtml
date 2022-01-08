@@ -1,24 +1,26 @@
 ﻿@page
-@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment hostingEnv
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment hostingEnv
 @{
-    bool isDev = hostingEnv.IsDevelopment();
-
     string cdnRoot = "https://cdn.jsdelivr.net/npm";
     
-    string vuetifyCss  = isDev ? "/node_modules/vuetify/dist/vuetify.css"
-                            : $"{cdnRoot}/vuetify@2.6.2/dist/vuetify.min.css";
-    string vuetifyJs   = isDev ? "/node_modules/vuetify/dist/vuetify.js"
-                            : $"{cdnRoot}/vuetify@2.6.2/dist/vuetify.min.js";
-    string msalJs      = isDev ? "/node_modules/@azure/msal-browser/lib/msal-browser.js"
-                            : $"{cdnRoot}/@azure/msal-browser@2.21.0/lib/msal-browser.min.js";
-    string axiosJs     = isDev ? "/node_modules/axios/dist/axios.js"
-                            : $"{cdnRoot}/axios@0.24.0/dist/axios.min.js";
-    string vueJs       = isDev ? "/node_modules/vue/dist/vue.js"
-                            : $"{cdnRoot}/vue@2.6.14/dist/vue.runtime.min.js";
-    string vueRouterJs = isDev ? "/node_modules/vue-router/dist/vue-router.js"
-                            : $"{cdnRoot}/vue-router@3.5.3/dist/vue-router.min.js";
+    string vuetifyCss  = $"{cdnRoot}/vuetify@2.6.2/dist/vuetify.min.css";
+    string msalJs      = $"{cdnRoot}/@azure/msal-browser@2.21.0/lib/msal-browser.min.js";
+    string axiosJs     = $"{cdnRoot}/axios@0.24.0/dist/axios.min.js";
+    string vueJs       = $"{cdnRoot}/vue@2.6.14/dist/vue.runtime.min.js";
+    string vueRouterJs = $"{cdnRoot}/vue-router@3.5.3/dist/vue-router.min.js";
+    string vuetifyJs   = $"{cdnRoot}/vuetify@2.6.2/dist/vuetify.min.js";
+
+    // If running dev builds, load from local packages rather than the CDN
+    if (hostingEnv.IsDevelopment())
+    {
+        vuetifyCss  = "/node_modules/vuetify/dist/vuetify.css";
+        msalJs      = "/node_modules/@azure/msal-browser/lib/msal-browser.js";
+        axiosJs     = "/node_modules/axios/dist/axios.js";
+        vueJs       = "/node_modules/vue/dist/vue.js";
+        vueRouterJs = "/node_modules/vue-router/dist/vue-router.js";
+        vuetifyJs   = "/node_modules/vuetify/dist/vuetify.js";
+    }
 }
 <!DOCTYPE html>
 <html lang="en">
