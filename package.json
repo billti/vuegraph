@@ -6,22 +6,22 @@
     "build": "webpack",
     "build:watch": "webpack --watch"
   },
-  "devDependencies": {
-    "mini-css-extract-plugin": "^2.4.6",
-    "ts-loader": "^9.2.6",
-    "vue-loader": "^15.9.8",
-    "vue-template-compiler": "^2.6.14",
-    "webpack": "^5.65.0",
-    "webpack-cli": "^4.9.1"
-  },
   "dependencies": {
     "@azure/msal-browser": "^2.21.0",
     "axios": "^0.24.0",
-    "typescript": "^4.5.4",
     "vue": "^2.6.14",
-    "vue-class-component": "^7.2.6",
-    "vue-property-decorator": "^9.1.2",
     "vue-router": "^3.5.3",
     "vuetify": "^2.6.2"
+  },
+  "devDependencies": {
+    "mini-css-extract-plugin": "^2.4.6",
+    "ts-loader": "^9.2.6",
+    "typescript": "^4.5.4",
+    "vue-class-component": "^7.2.6",
+    "vue-loader": "^15.9.8",
+    "vue-property-decorator": "^9.1.2",
+    "vue-template-compiler": "^2.6.14",
+    "webpack": "^5.65.0",
+    "webpack-cli": "^4.9.1"
   }
 }

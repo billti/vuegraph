@@ -15,25 +15,23 @@
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,
             // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
-            // "serverReadyAction": {
-            //    "action": "openExternally",
-            //    "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
-            // },
+            "serverReadyAction": {
+              "action": "openExternally",
+              "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
             // "suppressJITOptimizations": true, // Uncomment to better debug DLLs from NuGet packages, etc.
             "env": {
-                // "COMPlus_ReadyToRun": "0",    // Uncomment to disable loading n'gened (pre-optimized) binaries
+                // "COMPlus_ReadyToRun": "0",    // Uncomment to disable loading ngen'ed (pre-optimized) binaries
                 "ASPNETCORE_ENVIRONMENT": "Development"
             },
             "symbolOptions": {
                 "searchMicrosoftSymbolServer": true,
                 "searchNuGetOrgSymbolServer": true,
                 "moduleFilter": {
+                    // Note: This will still load symbols next to DLLs (such as for the app itself)
                     "mode": "loadOnlyIncluded",
                     "includedModules": ["*.Authentication.*"]
                 }
-            },
-            "sourceFileMap": {
-                "/Views": "${workspaceFolder}/Views"
             }
         },
         {

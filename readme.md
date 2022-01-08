@@ -5,31 +5,37 @@ and Microsoft Graph APIs with OAuth2 tokens.
 
 ## How it works
 
-This project doesn't bundle external libraries into the WebPack build. It loads the scripts directly
-from the NPM packages (see the Index.cshtml file). This results in super fast build times for
-WebPack, smaller bundles to download from the server, and better cache usage on the client.
+This project doesn't bundle external libraries into the `webpack` build. It loads the scripts
+directly from the `npm` packages (see the `./Pages/Index.cshtml` file). This results in super fast
+build times for `webpack`, smaller bundles to download from the server, and better cache usage on
+the client (as when the app bundle is rebuilt, the cached libraries from the CDN don't need to be
+reloaded).
 
 Loading scripts means globals such as `Vue`, `Vuetify`, `msal`, and `axios` are implicitly in scope
 and don't need to be imported. See the `shims.d.ts` file for how this is set up for TypeScript.
 
-When running in `Production` mode, the total download for the app is under 800KB, with only around
-80KB being loaded from the host server, and the rest being 3rd party packages loaded from the CDN.
+When running in `Production` mode, the total download for the app is under 800kb, with only around
+80kb (unminified) being loaded from the host server, and the rest being 3rd party packages loaded
+from the CDN.
+
+`Webpack` builds times are around 4 seconds from cold (on my laptop), and around 250ms when building
+changes in `--watch` mode.
 
 ## Auth flows
 
 As written, this app expects a user to have logged in with AzureAD. On site load if there is no
-active account then it will redirect the user to the sign-in page at login.microsoftonline.com (see
-`requireAccount` call in `main.ts`).
+active account then it will redirect the user to the sign-in page at `login.microsoftonline.com`
+(see `requireAccount` call in `./src/main.ts`).
 
 Once a user is signed in, further token acquisition may be attempted silently. Occasionally this
 can fail if tokens have expired or user consent is needed for additional permissions. Ideally this
 would show a popup to the user, however this can be problematic as the network response is
 asynchronous, and popups are blocked by browsers unless the result of direct user interaction (e.g.
-a click on the page). Doing a redirect is undesirable, as the page may contain unsaved changes or
-other state that could be lost on peforming the redirect flow.
+by a click on the page). Doing a redirect is undesirable, as the page may contain unsaved changes or
+other state that could be lost on performing the redirect flow.
 
-The solution to this here is to use a model overlay on token failure due to the need for user
-interaction, which the user must click on to acknowledge, which then triggers the popup flow to
+The solution to this here is to use a modal overlay on the app on token failure due to the need for
+user interaction, which the user must click on to acknowledge, which then triggers the popup flow to
 authenticate with AzureAD. In pseudo-code this is something like:
 
 ```ts
@@ -51,7 +57,10 @@ async function acquireToken(scopes: string[]) : Promise<Token> {
 }
 ```
 
-Note: Be sure to register the popup redirect URL `/popupRedirect.html` as a reply URL for the app.
+(The actual code is a little more complex. See `aquireTokenSilentOrPopup` in `./src/auth.ts`)
+
+Note: Be sure to register the popup redirect URL `/popupRedirect.html` as a reply URL for the app,
+as well as the root of the origin (e.g. `https://example.com/`).
 
 ## How this was authored
 
@@ -59,39 +68,33 @@ Install the Vue libraries with:
 
   `npm install vue vue-router vuetify`
 
-Install the TypeScript support with:
-
-  `npm install typescript vue-class-component vue-property-decorator`
-
 Install the client side AzureAD and REST request helper with:
 
   `npm install @azure/msal-browser axios`
 
-Install the WebPack build tooling with:
+Install the TypeScript support with:
+
+  `npm install --save-dev typescript vue-class-component vue-property-decorator`
+
+Install the webpack build tooling with:
 
   `npm install --save-dev webpack webpack-cli vue-loader vue-template-compiler ts-loader mini-css-extract-plugin`
 
-Add the below to package.json to build with WebPack via `npm run build`
+Add the below to package.json to build with webpack via `npm run build`
 
-```
+```txt
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "build:watch": "webpack --watch"
   },
 ```
 
-Add a `webpack.config.js` file to the root with:
+Add a `webpack.config.js` file as per this project for Vue, TypeScript, and CSS build support.
 
-```js
-// TODO: Detail the needed config
-```
+Likewise see the `tsconfig.json` at the root of this project for the minimal settings needed.
 
-Add a `tsconfig.json` file with:
-
-```json
-// TODO: Detail the needed config
-```
-
-Add the following property to the .csproj file: `<TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>`
+Add `<TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>` to the .csproj file to only compile
+the TypeScript code via webpack, not Visual Studio.
 
 ## Links
 
