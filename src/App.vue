@@ -42,14 +42,15 @@
 </template>
 
 <script lang="ts">
-import { Component } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
 import { logOut, setInvokeSignInPopup } from "./auth";
 
 @Component({})
 export default class App extends Vue {
   showSheet = false;
   signInClickHandler: Function | null = null;
-  userName = "";
+
+  @Prop({default: "Guest"}) readonly userName!: string;
 
   getRoutes() {
     return this.$router.getRoutes().filter((route) => route.path != "*");
@@ -62,10 +63,6 @@ export default class App extends Vue {
       this.signInClickHandler = callback;
       this.showSheet = true;
     });
-  }
-
-  setUserName(name: string) {
-      this.userName = name;
   }
 
   onSignInClicked() {

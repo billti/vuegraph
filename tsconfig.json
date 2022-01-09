@@ -1,14 +1,12 @@
 {
   "compilerOptions": {
-    "strict": true,
-    "noImplicitReturns": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "sourceMap": true,
-    "target": "es2020",
-    "module": "es2015",
+    "strict": true,                 // Sets 'noImplicitThis', which gives richer Vue types
+    "experimentalDecorators": true, // Required for vue-class-component
+    "allowUmdGlobalAccess": true,   // Needed to allow Vue UMD access without compiler warnings
+    "target": "es2020",             // For later targets, set useDefineForClassFields to false
+    "module": "es2020",
     "moduleResolution": "node",
-    "allowUmdGlobalAccess": true
+    "sourceMap": true
   },
   "include": ["src/**/*"],
   "exclude": [

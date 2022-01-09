@@ -17,8 +17,12 @@ requireAccount().then(account => {
     const vm = new App({
         el: "#app",
         vuetify: new Vuetify({ theme: { dark: true } }),
-        router: new VueRouter({ routes })
+        router: new VueRouter({ routes }),
+        propsData: {userName: account.name}
     });
 
-    (vm as any).setUserName(account.name || "");
+    // TODO: Wire up account change event to: (name) => vm.$props.userName = name
+
+    // Stick it on the window for ease of access when testing
+    Object.defineProperty(globalThis, "vueApp", {value: vm});
 });
