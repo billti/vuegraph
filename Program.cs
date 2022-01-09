@@ -1,11 +1,15 @@
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Identity.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();
 builder.Services.AddControllers();
+builder.Services.AddMicrosoftIdentityWebApiAuthentication(builder.Configuration);
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddHttpLogging(options => {
     // These are sensitive headers. Only log for development purposes.
     options.RequestHeaders.Add("Authorization");

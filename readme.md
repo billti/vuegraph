@@ -60,7 +60,8 @@ async function acquireToken(scopes: string[]) : Promise<Token> {
 (The actual code is a little more complex. See `aquireTokenSilentOrPopup` in `./src/auth.ts`)
 
 Note: Be sure to register the popup redirect URL `/popupRedirect.html` as a reply URL for the app,
-as well as the root of the origin (e.g. `https://example.com/`).
+as well as the root of the origin (e.g. `https://example.com/`). This demo also requires an
+'access_as_user' scope be registered for the app. See the start of `./src/auth.ts`.
 
 ## How this was authored
 
