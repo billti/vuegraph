@@ -28,6 +28,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+app.UseAuthentication();
+
 var npmOptions = new FileServerOptions();
 npmOptions.FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "node_modules"));
 npmOptions.RequestPath = "/node_modules";

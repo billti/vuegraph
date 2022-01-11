@@ -115,3 +115,5 @@ The below links may be useful for more information:
 - Add an authenticated REST API on the controllers
 - Add the Account page
 - Add the ability to search Graph for users
+- Detail setting the user secret via `dotnet user-secrets set "AzureAd:ClientSecret" "bc5412...."`
+  - This may not be required if the API is just validating the token (and not request or exchanging tokens).

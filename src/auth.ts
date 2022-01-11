@@ -2,7 +2,7 @@ import { AccountInfo, AuthenticationResult, Configuration, PopupRequest } from "
 
 const logDetails = true;
 
-const appScope = "api://f9c0e95b-5075-49b8-a673-6eb1bc113cf4/access_as_user";
+export const appScope = "api://f9c0e95b-5075-49b8-a673-6eb1bc113cf4/access_as_user";
 
 // Below is for the "Marketplace" app registration in the "billti.dev" AzureAD tenant
 const msalConfig: Configuration = {
