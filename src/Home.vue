@@ -10,8 +10,6 @@ import { acquireTokenSilentOrPopup, appScope } from "./auth";
 
 import type { AxiosRequestConfig } from "axios";
 
-const graphScopes = ["User.ReadBasic.All"];
-
 @Component({})
 export default class Home extends Vue {
   weatherData = "";
@@ -34,12 +32,6 @@ export default class Home extends Vue {
       .catch((err) =>
         console.error("acquireToken failed with: %s", err)
       );
-  }
-
-  getToken() {
-    acquireTokenSilentOrPopup(graphScopes).then((res) => {
-      console.log( "Got scopes [%s] for user: %s", res.scopes.join(","), res.account?.name);
-    });
   }
 }
 </script>
