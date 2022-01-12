@@ -29,7 +29,7 @@
                   {{ selected.name }}
                 </h3>
                 <div class="blue--text mb-2">
-                  {{ selected.email }}
+                  {{ selected.userPrincipalName }}
                 </div>
                 <div class="blue--text subheading font-weight-bold">
                   {{ selected.alias }}
@@ -49,7 +49,7 @@
 
 <script lang="ts">
 import { Component, Watch } from "vue-property-decorator";
-import { exampleDocument, GetProfilePic, SearchUsers } from "./users";
+import { GetPermissions, GetProfilePic, SearchUsers, UserPermissions as Permissions } from "./users";
 
 type treeViewItem = {
     id: number;
@@ -61,9 +61,10 @@ type treeViewItem = {
 
 @Component({})
 export default class UserPermissions extends Vue {
-  active = [];
+  active: number[] = [];
   avatar: string | null = null;
   open: number[] = [];
+  permissions: Permissions | null = null;
   users: treeViewItem[] = [];
   userPermissions: treeViewItem[] = [];
 
@@ -81,11 +82,11 @@ export default class UserPermissions extends Vue {
 
   get selected(): any {
     this.avatar = null;
-    if (!(this as any).active.length) return undefined;
+    if (!this.active.length) return undefined;
 
-    const id = (this as any).active[0];
+    const id = this.active[0];
 
-    var foundUser: any = undefined;
+    var foundUser: treeViewItem | null = null;
 
     this.users.forEach((org) =>
       org.children?.forEach((user) => {
@@ -94,11 +95,13 @@ export default class UserPermissions extends Vue {
     );
 
     if (foundUser) {
-      let oid = foundUser.accountId.split(".")[1];
-        GetProfilePic(oid).then((pic) => {
+      // The 'as any' is needed due to https://github.com/microsoft/TypeScript/issues/47399
+      let oid = (foundUser as any).accountId.split(".")[1];
+      GetProfilePic(oid).then((pic) => {
         this.avatar = pic;
-      });
-      this.permissionsForUser(foundUser.accountId);
+      }).catch(err => null); // Ignore errors. Sometimes profile pics don't exist.
+      
+      this.permissionsForUser((foundUser as any).accountId);
     }
 
     return foundUser;
@@ -109,16 +112,19 @@ export default class UserPermissions extends Vue {
   }
 
   get isOrgSelected() {
-    if (!(this as any).active.length) return undefined;
+    if (!this.active.length) return undefined;
 
-    const id = (this as any).active[0];
+    const id = this.active[0];
 
     // If it's a top-level node, it's an org
     return this.users.some(node => node.id === id);
   }
 
   mounted() {
+    GetPermissions().then(result => {
+      this.permissions = result;
       this.usersToTreeView();
+    });
   }
 
   @Watch("permissionSelection")
@@ -127,7 +133,6 @@ export default class UserPermissions extends Vue {
   }
 
   addUserClicked(): any {
-      debugger;
     SearchUsers("Ariana").then(result => {
         console.log(result);
     }).catch(err => console.error(err));
@@ -138,60 +143,63 @@ export default class UserPermissions extends Vue {
   }
 
   usersToTreeView() {
-      // Get the list of users and construct the company and permissions tree views.
-      let userTree: treeViewItem[] = [];
+    if (!this.permissions) return;
+    let permissions = this.permissions;
 
-      let serverResponse = exampleDocument; // TODO: Get from the service.
-      let currId = 1;
+    // Get the list of users and construct the company and permissions tree views.
+    let userTree: treeViewItem[] = [];
+    let currId = 1;
 
-      // Add each org as a root to the tree
-      serverResponse.orgs.forEach(org => {
-          userTree.push({id: currId++, name: org, children: []});
-      });
+    // Add each org as a root to the tree
+    permissions.orgs.forEach(org => {
+      userTree.push({id: currId++, name: org, children: []});
+    });
 
-      Object.getOwnPropertyNames(serverResponse.users).forEach(accountId => {
-          let currUser = serverResponse.users[accountId];
-          let orgNode = userTree.find(node => node.name === currUser.org);
-          if (!orgNode) throw `User ${currUser.displayName} has an invalid org`;
-          orgNode.children!.push({id: currId++, name: currUser.displayName, accountId});
-      });
-
-      this.users = userTree;
+    for(let accountId in permissions.users) {
+      let currUser = permissions.users[accountId];
+      let orgNode = userTree.find(node => node.name === currUser.org);
+      if (!orgNode) throw `User ${currUser.displayName} has an invalid org`;
+      orgNode.children!.push({id: currId++, name: currUser.displayName, accountId});
+    }
+    
+    this.users = userTree;
   }
 
   permissionsForUser(accountId: string) {
-      // Construct a tree with root nodes for "Global" plus every org, and a subnode for every permission.
-      let permissions: treeViewItem[] = [];
-      let enabled: number[] = [];
-      let openOrgs: number[] = [];
-      let currId = 0;
+    if (!this.permissions) return;
+    let perms = this.permissions;
 
-      let availablePermissions = ["Admin", "Reader", "Reviewer", "Creator", "Publisher"];
+    // Construct a tree with root nodes for "Global" plus every org, and a subnode for every permission.
+    let permissions: treeViewItem[] = [];
+    let enabled: number[] = [];
+    let openOrgs: number[] = [];
+    let currId = 0;
 
-      let serverResponse = exampleDocument; // TODO: Get from the service.
-      let topLevelNodes = ["Global", ...serverResponse.orgs];
-      let user = serverResponse.users[accountId];
-      if (!user) throw `User ${accountId} was selected but not found`;
+    let availablePermissions = ["Admin", "Reader", "Reviewer", "Creator", "Publisher"];
+
+    let topLevelNodes = ["Global", ...perms.orgs];
+    let user = perms.users[accountId];
+    if (!user) throw `User ${accountId} was selected but not found`;
 
       // Build the tree for each org and permission.
-      topLevelNodes.forEach(org => {
-          let orgNode: treeViewItem = {id: ++currId, name: org, children: []};
-          availablePermissions.forEach(perm => {
-              let aclName = `${org}:${perm}`
-              orgNode.children!.push({id: ++currId, name: perm, aclName});
+    topLevelNodes.forEach(org => {
+      let orgNode: treeViewItem = {id: ++currId, name: org, children: []};
+      availablePermissions.forEach(perm => {
+        let aclName = `${org}:${perm}`
+        orgNode.children!.push({id: ++currId, name: perm, aclName});
 
-              // If the user has this permission, then enable it in the tree
-              if (user.acl.includes(aclName)) {
-                  enabled.push(currId);
-                  if (!openOrgs.includes(orgNode.id)) openOrgs.push(orgNode.id);
-              }
-          });
-          permissions.push(orgNode);
+        // If the user has this permission, then enable it in the tree
+        if (user.acl.includes(aclName)) {
+          enabled.push(currId);
+          if (!openOrgs.includes(orgNode.id)) openOrgs.push(orgNode.id);
+        }
       });
+      permissions.push(orgNode);
+    });
 
-      this.open = openOrgs;
-      this.userPermissions = permissions;
-      this.permissionSelection = enabled;
+    this.open = openOrgs;
+    this.userPermissions = permissions;
+    this.permissionSelection = enabled;
   }
 }
 </script>

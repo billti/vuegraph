@@ -1,4 +1,4 @@
-import { acquireTokenSilentOrPopup } from "./auth";
+import { acquireTokenSilentOrPopup, appScope } from "./auth";
 
 export interface UserPermissions {
     orgs: Array<string>;
@@ -11,51 +11,16 @@ export interface UserPermissions {
     };
 }
 
-// Tip: Find actual OIDs by going to Graph Explorer (aka.ms/ge) and running queries such as:
-// https://graph.microsoft.com/v1.0/users/joe@contoso.com
-// Or alternatively from Az PowerShell: Get-AzADUser -DisplayName "Bill Ticehurst"
+export async function GetPermissions() : Promise<UserPermissions> {
+  let oauthToken = (await acquireTokenSilentOrPopup([appScope])).accessToken;
+  let result = await axios.get("/api/permissions", {headers: {"Authorization": `Bearer ${oauthToken}`}});
 
-// Example of a user permissions document
-export const exampleDocument: UserPermissions = {
-  "orgs": ["Microsoft", "Contoso"],
-  "users": {
-    "a8257b21-ac35-4244-9f9e-17c2ea736263.68395d36-8beb-4cb5-ae20-79250b1cf3c9": {
-      "org": "Microsoft",
-      "displayName": "Bill Ticehurst",
-      "acl": ["Global:Admin", "Global:Reviewer", "Global:Publisher", "Microsoft:Contributor"]
-    },
-    "a8257b21-ac35-4244-9f9e-17c2ea736263.130180d7-e49e-4d28-a6ed-1667a7ee7a35": {
-      "org": "Microsoft",
-      "displayName": "Joe Dirt",
-      "acl": ["Global:Admin", "Microsoft:Reader", "Microsoft:Reviewer"]
-    },
-    "a8257b21-ac35-4244-9f9e-17c2ea736263.8e7bd652-2057-4de4-b540-d4892660e36c": {
-      "org": "Microsoft",
-      "displayName": "Mike Tyson",
-      "acl": ["Microsoft:Reader", "Microsoft:Publisher", "Contoso:Publisher"]
-    },
-    "a8257b21-ac35-4244-9f9e-17c2ea736263.8ef3596f-b491-4222-b864-25949209fe7c": {
-      "org": "Microsoft",
-      "displayName": "Snow White",
-      "acl": ["Global:Reader", "Global:Reviewer", "Global:Publisher"]
-    },
-    "a8257b21-ac35-4244-9f9e-17c2ea736263.08a538bb-9e42-4001-95fd-4bdb9cb673de": {
-      "org": "Microsoft",
-      "displayName": "Pit Bull",
-      "acl": ["Microsoft:Reader", "Microsoft:Creator"]
-    },
-    "a8257b21-ac35-4244-9f9e-17c2ea736263.8bd714be-02e3-43ee-843a-9ec7f33b45f0": {
-      "org": "Contoso",
-      "displayName": "Ariana Grande",
-      "acl": ["Contoso:Reviewer", "Contoso:Contributor"]
-    },
-    "a8257b21-ac35-4244-9f9e-17c2ea736263.ff2d16eb-a247-44ec-8db3-5a768dd2b33c": {
-      "org": "Contoso",
-      "displayName": "Test User",
-      "acl": ["Contoso:Reader", "Contoso:Reviewer", "Contoso:Contributor"]
-    }
-  }
-};
+  if (result.status !== 200) throw `Failed to fetch permissions. Error: ${result.statusText}`;
+
+  let permissions = result.data as UserPermissions;
+  if (!permissions.orgs || !permissions.users) throw `Invalid permissions response: ${result.data}`;
+  return permissions;
+}
 
 export async function GetProfilePic(oid: string): Promise<string | null> {
     // Need a token with User.BasicRead.All to access other people's photos
@@ -103,7 +68,6 @@ export async function SearchUsers(term: string): Promise<SearchUsersResult[]> {
         "userPrincipalName": "ariana@billti.dev",
         "id": "8bd714be-02e3-43ee-843a-9ec7f33b45f0"
     } */
-
 
     if (result.status === 200) {
         let payload: SearchUsersResult[] = result.data?.value || [];

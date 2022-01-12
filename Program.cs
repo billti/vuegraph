@@ -16,6 +16,8 @@ builder.Services.AddHttpLogging(options => {
     options.ResponseHeaders.Add("WWW-Authenticate");
 });
 
+builder.Services.AddSingleton<vuegraph.PermissionsService>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
