@@ -1,14 +1,14 @@
-import { AccountInfo, AuthenticationResult, Configuration, PopupRequest } from "@azure/msal-browser";
+import { AccountInfo, AuthenticationResult, Configuration, PopupRequest, RedirectRequest } from "@azure/msal-browser";
 
 const logDetails = true;
 
-export const appScope = "api://f9c0e95b-5075-49b8-a673-6eb1bc113cf4/access_as_user";
+export const appScope = "api://f349e1fd-1081-4a1d-ac7f-2363a35006bf/.default";
 
 // Below is for the "Marketplace" app registration in the "billti.dev" AzureAD tenant
 const msalConfig: Configuration = {
     auth: {
-        clientId: "f9c0e95b-5075-49b8-a673-6eb1bc113cf4",
-        authority: "https://login.microsoftonline.com/a8257b21-ac35-4244-9f9e-17c2ea736263",
+        clientId: "eea619ad-603a-4b03-a386-860fcc7410d1",
+        authority: "https://login.microsoftonline.com/common",
         redirectUri: window.location.origin,
         postLogoutRedirectUri: window.location.origin
     }
@@ -30,7 +30,7 @@ let currentUser: AccountInfo | null = null;
 // Per MSAL docs, the popup redirect should be a (close to) blank page on the origin
 // to both improve perf and avoid potential issues. (The page redirected to is not used
 // for anything other than detecting the popup window URL has returned to the origin).
-const popupRedirect = window.origin + "/popupRedirect.html";
+const popupRedirect = window.origin + "/EndAuth";
 
 // This wires up the redirect callback to ensure an account is signed in.
 export function requireAccount(): Promise<AccountInfo | null> {
@@ -43,7 +43,8 @@ export function requireAccount(): Promise<AccountInfo | null> {
                 // Nobody signed in. On browser page load there has been no interaction (e.g. user click event), so have
                 // to do the redirect flow, as popups will be blocked.
                 // Note: The redirect cause the page to navigate. The Promise never actually resolves, so suppress return type errors.
-                return msalInstance.loginRedirect() as any;
+                var req: RedirectRequest = {scopes: ["openid", "profile", "offline_access", appScope]};
+                return msalInstance.loginRedirect(req) as any;
             } else {
                 // One or more accounts already signed-in. Could prompt the user which to use, but just default to the first
                 // It seems rare in a single-tenant app you'd be signed in with multiple accounts at the same time.
